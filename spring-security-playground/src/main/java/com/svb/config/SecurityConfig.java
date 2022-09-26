@@ -22,6 +22,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.svb.filter.AuthoritiesLoggingAfterFilter;
+import com.svb.filter.JWTTokenGeneratorFilter;
+import com.svb.filter.JWTTokenValidatorFilter;
 import com.svb.filter.RequestValidationBeforeFilter;
 
 @Configuration
@@ -71,6 +73,8 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter{
 		.and()
 		.addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
 		.addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+		.addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
+		.addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
 		.authorizeRequests()
 		.antMatchers("/myAccount").hasRole("ADMIN")
 		.antMatchers("/myBalance").hasAnyRole("USER","ADMIN")
