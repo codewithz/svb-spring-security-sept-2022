@@ -22,6 +22,20 @@ INSERT IGNORE INTO `authorities` VALUES (NULL, 'tom', 'write');
 select * from users;
 
 select * from authorities;
+
+CREATE TABLE `customer` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(45) NOT NULL,
+  `pwd` varchar(45) NOT NULL,
+  `role` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+
+  
+  INSERT INTO `customer` (`email`, `pwd`, `role`)
+ VALUES ('john.doe@example.com', '54321', 'admin');
+
   
   
 
