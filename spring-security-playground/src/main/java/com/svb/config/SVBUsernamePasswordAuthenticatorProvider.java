@@ -47,7 +47,7 @@ public class SVBUsernamePasswordAuthenticatorProvider implements AuthenticationP
 				List<GrantedAuthority> grantedAuthorities=getGrantedAuthorities(authorities);
 				
 				return new UsernamePasswordAuthenticationToken(username, password, grantedAuthorities);
-			}
+			} 
 			else {
 				throw new BadCredentialsException("Invalid Password!!");
 			}
