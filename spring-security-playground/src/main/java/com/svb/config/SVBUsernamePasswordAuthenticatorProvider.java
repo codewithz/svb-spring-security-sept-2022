@@ -2,6 +2,7 @@ package com.svb.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.svb.model.Authority;
 import com.svb.model.Customer;
 import com.svb.repository.CustomerRepository;
 
@@ -40,11 +42,11 @@ public class SVBUsernamePasswordAuthenticatorProvider implements AuthenticationP
 		
 		if(!customersList.isEmpty()) {
 			Customer c=customersList.get(0);
-			
+			Set<Authority> authorities=c.getAuthorities();
 			if(passwordEncoder.matches(password, c.getPwd())) {
-				List<GrantedAuthority> authorities=new ArrayList<>();
-				authorities.add(new SimpleGrantedAuthority(c.getRole()));
-				return new UsernamePasswordAuthenticationToken(username, password, authorities);
+				List<GrantedAuthority> grantedAuthorities=getGrantedAuthorities(authorities);
+				
+				return new UsernamePasswordAuthenticationToken(username, password, grantedAuthorities);
 			}
 			else {
 				throw new BadCredentialsException("Invalid Password!!");
@@ -55,6 +57,16 @@ public class SVBUsernamePasswordAuthenticatorProvider implements AuthenticationP
 		}
 		
 		
+	}
+	
+	private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities){
+		List<GrantedAuthority> grantedAuthorities=new ArrayList<>();
+		
+		for(Authority authority:authorities) {
+			grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+		}
+		
+		return grantedAuthorities;
 	}
 
 	@Override
