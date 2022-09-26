@@ -2,6 +2,9 @@ package com.svb.config;
 
 
 
+import java.util.Collections;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
@@ -13,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 public class SecurityConfig  extends WebSecurityConfigurerAdapter{
@@ -40,6 +46,25 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter{
 //			.httpBasic();
 		
 		http
+		.cors()
+		.configurationSource(new CorsConfigurationSource() {
+			
+			@Override
+			public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+				CorsConfiguration config=new CorsConfiguration();
+				config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+				config.setAllowedMethods(Collections.singletonList("*")); //GET,POST,DELETE,PUT
+				config.setAllowCredentials(true);
+				config.setAllowedHeaders(Collections.singletonList("*"));
+				config.setMaxAge(3600L);
+				return config;
+			}
+		})
+		.and()
+		.csrf()
+		.ignoringAntMatchers("/contact")
+		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+		.and()
 		.authorizeRequests()
 		.antMatchers("/myAccount").authenticated()
 		.antMatchers("/myBalance").authenticated()
